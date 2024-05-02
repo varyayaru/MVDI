@@ -2,12 +2,17 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Word extends Model {
-    static associate({ Category, UserWord }) {
+    static associate({ Category, UserWord, User }) {
       this.belongsTo(Category, { foreignKey: "category_id" });
-      this.belongsToMany(UserWord, {
-        through: "UserWords",
+      this.hasMany(UserWord, { foreignKey: 'word_id'})
+      this.belongsToMany(User, {
+        through: "UserWord",
         foreignKey: "word_id",
       });
+      // this.belongsToMany(UserWord, {
+      //   through: "UserWords",
+      //   foreignKey: "word_id",
+      // });
     }
   }
   Word.init(
