@@ -4,6 +4,7 @@ import ProtectedRoute from "./components/hoc/ProtectedRoute";
 import AuthPage from "./components/pages/AuthPage";
 import { useEffect, useState } from "react";
 import axiosInstance, { setAccessToken } from "../axiosInstance";
+import Progress from "./components/pages/Progress";
 
 function App() {
   const [user, setUser] = useState();
@@ -55,8 +56,13 @@ function App() {
               }
           ],
         },
+        {
+          path: '/progress',
+          element: < Progress />
+        }
        
       ],
+
     },
 
   ]);
