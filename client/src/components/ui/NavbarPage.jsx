@@ -3,17 +3,18 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import React from 'react'
+import { NavLink } from 'react-router-dom';
 
-export default function NavbarPage() {
+export default function NavbarPage({user,logoutHandler}) {
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
-        <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+        <Navbar.Brand href="#home">EnLearn</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link>
+            <Nav.Link href="home">Home</Nav.Link>
+            <Nav.Link as={NavLink} to="/">Link</Nav.Link>
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
@@ -25,6 +26,10 @@ export default function NavbarPage() {
                 Separated link
               </NavDropdown.Item>
             </NavDropdown>
+            {user ? (
+              <Nav.Link onClick={() => logoutHandler()} >Logout</Nav.Link>
+  
+) : (<div>hello</div>)}
           </Nav>
         </Navbar.Collapse>
       </Container>

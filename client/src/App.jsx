@@ -16,6 +16,7 @@ function App() {
       setUser(null);
     });
   }, []);
+  console.log(user);
   const loginHandler = async (event)=>{
     event.preventDefault()
     const dataForm= Object.fromEntries(new FormData(event.target) )
@@ -36,10 +37,10 @@ function App() {
     setAccessToken(data.accessToken);
   };
   // const user = null;
+  console.log({user})
   const router = createBrowserRouter([
     {
-      path: "/",
-      element: <Root/>,
+      element: <Root user={user} logoutHandler={logoutHandler} />,
       children: [
         {
           path: '/auth',
@@ -54,35 +55,13 @@ function App() {
               }
           ],
         },
-        // {
-        //   path: "/about",
-        //   element: <AboutPage />,
-        // },
-        // {
-        //   path: "/sweatshirts",
-        //   element: <SweatshirtPage />,
-        // },
-        // {
-        //   path: "/tshirts",
-        //   element: <TshirtPage />,
-        // },
-        // {
-        //   path: "/pants",
-        //   element: <PantsPage />,
-        // },
-        // {
-        //   path: "/bags",
-        //   element: <BagPage />,
-        // },
-        // {
-        //   path: "/sweaters",
-        //   element: <SweaterPage />,
-        // },
        
       ],
     },
 
   ]);
+  // user === undefined, null, {}
+  if(user === undefined) return <h1>Loading...</h1>
 
   return (
     <RouterProvider router={router} />
