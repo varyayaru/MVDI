@@ -1,34 +1,71 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import Root from "./Root";
+import ProtectedRoute from "./components/hoc/ProtectedRoute";
+import AuthPage from "./components/pages/AuthPage";
+import { useEffect, useState } from "react";
+import axiosInstance, { setAccessToken } from "../axiosInstance";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [user, setUser] = useState();
+  useEffect(() => {
+    axiosInstance('/tokens/refresh').then((res) => {
+      const { user: newUser, accessToken } = res.data;
+      setUser(newUser);
+      setAccessToken(accessToken);
+    }).catch(() => {
+      setUser(null);
+    });
+  }, []);
+  console.log(user);
+  const loginHandler = async (event)=>{
+    event.preventDefault()
+    const dataForm= Object.fromEntries(new FormData(event.target) )
+    const res = await axiosInstance.post('/auth/login', dataForm);
+    const { data } = res;
+    setUser(data.user);
+    setAccessToken(data.accessToken);
+  }
+  const logoutHandler = async () => {
+    await axiosInstance('/auth/logout');
+    setUser(null);
+    setAccessToken('');
+  };
+  const signupHandler = async (formData) => {
+    const res = await axiosInstance.post('/auth/signup', formData);
+    const { data } = res;
+    setUser(data.user);
+    setAccessToken(data.accessToken);
+  };
+  // const user = null;
+  console.log({user})
+  const router = createBrowserRouter([
+    {
+      element: <Root user={user} logoutHandler={logoutHandler} />,
+      children: [
+        {
+          path: '/auth',
+          element: <AuthPage loginHandler={loginHandler} signupHandler={signupHandler}/>,
+        },
+        {
+          element: <ProtectedRoute isAllowed={user} redirectPath = '/auth'/>,
+          children: [
+            {
+               path: '/',
+               element: <h1>aaa</h1> 
+              }
+          ],
+        },
+       
+      ],
+    },
+
+  ]);
+  // user === undefined, null, {}
+  if(user === undefined) return <h1>Loading...</h1>
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
+    <RouterProvider router={router} />
+  )
 }
 
 export default App;
