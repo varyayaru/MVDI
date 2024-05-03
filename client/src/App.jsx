@@ -16,7 +16,14 @@ function App() {
       setUser(null);
     });
   }, []);
-  console.log(user);
+
+  const addWordHandler = async (e) => {
+    e.preventDefault();
+    const formData = Object.fromEntries(new FormData(e.target));
+    const res = await axiosInstance.post('/words', formData);
+    // setWords((prev) => [res.data, ...prev]);
+  };
+
   const loginHandler = async (event)=>{
     event.preventDefault()
     const dataForm= Object.fromEntries(new FormData(event.target) )
@@ -36,31 +43,46 @@ function App() {
     setUser(data.user);
     setAccessToken(data.accessToken);
   };
-  // const user = null;
-  console.log({user})
+ 
   const router = createBrowserRouter([
     {
       element: <Root user={user} logoutHandler={logoutHandler} />,
       children: [
         {
-          path: '/auth',
-          element: <AuthPage loginHandler={loginHandler} signupHandler={signupHandler}/>,
+          
+          element: <ProtectedRoute isAllowed={!user} redirectPath = '/'/>,
+          children:[
+            {
+              path: '/auth',
+              element: <AuthPage loginHandler={loginHandler} signupHandler={signupHandler}/>
+            }
+          ],
         },
         {
           element: <ProtectedRoute isAllowed={user} redirectPath = '/auth'/>,
           children: [
             {
                path: '/',
-               element: <h1>aaa</h1> 
+               element: <h1>Илья</h1> 
+                
+              },
+              {
+                path: '/process',
+                element: <h1>Дима</h1>
+              },
+              {
+                path:'/cards',
+                element: <h1>Миня</h1>
               }
+
           ],
         },
+        {}
        
       ],
     },
 
   ]);
-  // user === undefined, null, {}
   if(user === undefined) return <h1>Loading...</h1>
 
   return (

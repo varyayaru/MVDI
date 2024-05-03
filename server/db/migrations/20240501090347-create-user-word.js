@@ -24,7 +24,12 @@ module.exports = {
           key: "id",
         },
         onDelete: "CASCADE",
+    
       },
+      done: {
+        type: Sequelize.BOOLEAN,
+      },
+     
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
