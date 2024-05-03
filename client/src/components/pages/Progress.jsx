@@ -6,18 +6,27 @@ export default function Progress() {
   const [categories, setCategories] = useState([]);
   useEffect(() => {
     axiosInstance("/progress").then((res) => {
-      console.log(res.data);
+      // const proc = res.data.map((el) => el.Words.map((la) => la.UserWords));
+      // const len = proc.map((kk) => kk.length);
+      // const lenTr = proc.map((kk) => {})
+      // console.log(lenTr)
+      // console.log(proc);
+      // console.log(res.data);
       setCategories(res.data);
     });
   }, []);
   return (
     <Row>
       {categories.map((cat) => {
-        // const proc = длина только с тру значение поделить на фулл длину UserWord * 100
+        const proc = cat.Words.map((el) => el.UserWords);
+        const len = proc.map((kk) => kk.length);
+
+        const rez = len.filter((el) => el > 0)
+        const rezZ = (rez.length / len.length) * 100
         return (
           <ul>
             {`${cat.name}`}
-            <ProgressBar now={90} label={`${90}%`} style={{width: '50%'}}/>
+            <ProgressBar now={rezZ} label={`${rezZ}%`} style={{ width: "50%" }} />
           </ul>
         );
       })}

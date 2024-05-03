@@ -68,8 +68,8 @@ function App() {
                 
               },
               {
-                path: '/process',
-                element: <h1>Дима</h1>
+                path: '/progress',
+                element: <Progress />
               },
               {
                 path:'/cards',
@@ -78,14 +78,6 @@ function App() {
 
           ],
         },
-<<<<<<< HEAD
-        {
-          path: '/progress',
-          element: < Progress />
-        }
-=======
-        {}
->>>>>>> main
        
       ],
 

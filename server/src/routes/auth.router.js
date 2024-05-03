@@ -1,12 +1,12 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
-const { User } = require('../../db/models');
-const generateTokens = require('../utils/generateTokens');
-const cookiesConfig = require('../configs/cookiesConfig');
+const express = require("express");
+const bcrypt = require("bcrypt");
+const { User, Word, UserWord } = require("../../db/models");
+const generateTokens = require("../utils/generateTokens");
+const cookiesConfig = require("../configs/cookiesConfig");
 
 const authRouter = express.Router();
 
-authRouter.post('/login', async (req, res) => {
+authRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const targetUser = await User.findOne({ where: { email } });
   if (!targetUser) return res.sendStatus(401);
@@ -21,11 +21,11 @@ authRouter.post('/login', async (req, res) => {
   const { accessToken, refreshToken } = generateTokens({ user });
 
   res
-    .cookie('refreshToken', refreshToken, cookiesConfig)
+    .cookie("refreshToken", refreshToken, cookiesConfig)
     .json({ accessToken, user });
 });
 
-authRouter.post('/signup', async (req, res) => {
+authRouter.post("/signup", async (req, res) => {
   const { email, password, name } = req.body;
   if (password.length < 3) return res.sendStatus(400);
 
@@ -42,12 +42,17 @@ authRouter.post('/signup', async (req, res) => {
   const { accessToken, refreshToken } = generateTokens({ user });
 
   res
-    .cookie('refreshToken', refreshToken, cookiesConfig)
+    .cookie("refreshToken", refreshToken, cookiesConfig)
     .json({ accessToken, user });
+  const allWords = await Word.findAll();
+  const promises = allWords.map((word) =>
+    UserWord.create({ user_id: user.id, word_id: word.id })
+  );
+  await Promise.all(promises);
 });
 
-authRouter.get('/logout', (req, res) => {
-  res.clearCookie('refreshToken').sendStatus(200);
+authRouter.get("/logout", (req, res) => {
+  res.clearCookie("refreshToken").sendStatus(200);
 });
 
 module.exports = authRouter;

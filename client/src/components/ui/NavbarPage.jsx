@@ -22,7 +22,7 @@ export default function NavbarPage({user,logoutHandler}) {
       <Nav className="me-auto">
             <Nav.Link as={NavLink} to="/">Начать тренировку</Nav.Link>
             <NavDropdown title="Личный кабинет" id="basic-nav-dropdown">
-              <NavDropdown.Item as={NavLink} to="/process">Прогресс</NavDropdown.Item>
+              <NavDropdown.Item as={NavLink} to="/progress">Прогресс</NavDropdown.Item>
               
               <NavDropdown.Divider />
               <NavDropdown.Item onClick={handleShow}>

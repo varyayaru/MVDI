@@ -410,6 +410,7 @@ module.exports = {
         {
           user_id: 1,
           word_id: 1,
+          done: true,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
